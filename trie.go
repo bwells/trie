@@ -104,19 +104,16 @@ func (t *Trie) fetchRemainder() []interface{} {
 		node = element.Value.(*Trie)
 
 		if node.value != nil {
-
-			// save a cast of this for convenience
-			// var value []interface{} = node.value.([]interface{})
-			value := node.value
-
-			// if results has insufficent capacity then grow it
-			if cap(value) < len(value)+len(results) {
-				newSlice := make([]interface{}, len(results), len(value)+len(results))
+			items := node.value
+			new_length := len(results) + len(items)
+			// if results slice has insufficent capacity then grow it
+			if new_length > cap(results) {
+				newSlice := make([]interface{}, len(results), new_length*2)
 				copy(newSlice, results)
 				results = newSlice
 			}
-			// extend the results slice with our value
-			results = append(results, value...)
+			// extend the results slice with our items
+			results = append(results, items...)
 		}
 
 		for _, child := range node.children {
